@@ -10,7 +10,7 @@
         // 1x size 2
         /////////////////////////////////////////////////////////
 
-        const bool debugText = true;
+        const bool debugText = false;
         static int[] firstHit = [-1, -1];
         static int[] lastHit = [-1, -1];
 
