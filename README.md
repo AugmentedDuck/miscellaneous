@@ -6,7 +6,7 @@ This is a collection of random small projects
 * Calculators:
   * [ ] Complex Numbers (C#)
   * [ ] Finding Limits of Functions (C#)
-* [ ] Collatz Conjecture (C#)
+* [X] Collatz Conjecture (C#)
 * Different Encryptions and Solvers:
   * [ ] Enigma (JS)
   * [ ] Subsitution Ciphers (JS)
