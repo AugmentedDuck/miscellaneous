@@ -713,7 +713,7 @@
                 {
                     break;
                 }
-                else if (board[firstHit[0] - i, firstHit[1]] == 3)
+                else if (board[firstHit[0], firstHit[1] - i] == 3)
                 {
                     break;
                 }
