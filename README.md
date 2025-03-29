@@ -2,7 +2,7 @@
 This is a collection of random small projects
 
 # Whats here?
-* [ ] Battle Ship Game Engine/Cheat
+* [X] Battle Ship Game Engine/Cheat
 * Calculators:
   * [ ] Complex Numbers
   * [ ] Finding Limits of Functions
