@@ -11,6 +11,8 @@
         /////////////////////////////////////////////////////////
 
         const bool debugText = true;
+        static int[] firstHit = [-1, -1];
+        static int[] lastHit = [-1, -1];
 
         static void Main(string[] args)
         {
@@ -91,6 +93,9 @@
                     }
                     else if (input == "s")
                     {
+                        enemyBoard[cpuHit[0], cpuHit[1]] = 1;
+                        lastHit = [cpuHit[0], cpuHit[0]];
+
                         Console.WriteLine($"Enter sunk ship size:");
                         int sunkShipSize;
                         while (true)
@@ -101,7 +106,8 @@
                                 if (ships.Contains(sunkShipSize))
                                 {
                                     ships = ships.Where(s => s != sunkShipSize).ToArray();
-                                    enemyBoard = MarkSunkShip(enemyBoard, cpuHit, sunkShipSize);
+                                    enemyBoard = MarkSunkShip(enemyBoard, sunkShipSize);
+                                    firstHit = [-1, -1];
                                     break;
                                 }
                             }
@@ -111,7 +117,6 @@
                             }
 
                         }
-                        enemyBoard[cpuHit[0], cpuHit[1]] = 2;
                         break;
                     }
                     else
@@ -129,41 +134,71 @@
             }
         }
 
-        static int[,] MarkSunkShip(int[,] board, int[] startCoords, int shipSize)
+        static int[,] MarkSunkShip(int[,] board, int shipSize)
         {
-            HashSet<(int, int)> visited = new();
-            List<(int, int)> shipParts = new();
-            Queue<(int, int)> toVisit = new();
+            int xDifference = firstHit[0] - lastHit[0];
+            int yDifference = firstHit[1] - lastHit[1];
 
-            toVisit.Enqueue((startCoords[0], startCoords[1]));
-
-            while (toVisit.Count > 0)
+            if (xDifference != 0)
             {
-                var (x, y) = toVisit.Dequeue();
-                if (visited.Contains((x, y)) || board[x, y] != 1)
+                if (xDifference == shipSize)
                 {
-                    continue;
+                    for (int i = 0; i < xDifference; i++)
+                    {
+                        board[firstHit[0] + i, firstHit[1]] = 2;
+                    }
                 }
-
-                visited.Add((x, y));
-                shipParts.Add((x, y));
-
-                if (x > 0) toVisit.Enqueue((x - 1, y));   
-                if (x < board.GetLength(0) - 1) toVisit.Enqueue((x + 1, y));
-                if (y > 0) toVisit.Enqueue((x, y - 1));
-                if (y < board.GetLength(1) - 1) toVisit.Enqueue((x, y + 1));
+                else if (-xDifference == shipSize)
+                {
+                    for (int i = 0; i < -xDifference; i++)
+                    {
+                        board[firstHit[0] - i, firstHit[1]] = 2;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < board.GetLength(0); i++)
+                    {
+                        if (board[i, firstHit[1]] == 1)
+                        {
+                            board[i, firstHit[1]] = 2;
+                        }
+                    }
+                }
             }
-
-            if (shipParts.Count == shipSize)
+            else if ( yDifference != 0)
             {
-                foreach (var (x, y) in shipParts)
+                if (yDifference == shipSize)
                 {
-                    board[x, y] = 2; // Mark as sunk
+                    for (int i = 0; i < yDifference; i++)
+                    {
+                        board[firstHit[0], firstHit[1] + i] = 2;
+                    }
                 }
+                else if (-yDifference == shipSize)
+                {
+                    for (int i = 0; i < -yDifference; i++)
+                    {
+                        board[firstHit[0], firstHit[1] - i] = 2;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < board.GetLength(1); i++)
+                    {
+                        if (board[firstHit[0], i] == 1)
+                        {
+                            board[firstHit[0], i] = 2;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("Last Hit and First hit are identical; Expected different values");
             }
 
             return board;
-
         }
 
         static int[] CPUTurn(int[,] enemyBoard, int randomWeight, int patternWeight, int scanWeight, Random random, int[] ships)
@@ -173,7 +208,11 @@
 
             if (IsAnyLeft(enemyBoard, 1))
             {
-                //return ChooseSpaceByAdjecent(enemyBoard);
+                if (firstHit[0] == -1)
+                {
+                    firstHit = FindFirstInstance(enemyBoard, 1);
+                }
+                return ChooseSpaceByAdjecent(enemyBoard);
             }
 
             if (nextAlgorithm < randomWeight)
@@ -190,6 +229,25 @@
             }
 
             return hitCoords;
+        }
+
+        static int[] FindFirstInstance(int[,] board, int target)
+        {
+            int[] coords = [-1, -1];
+            for (int i = 0; i < board.GetLength(1); i++)
+            {
+                for (int j = 0; j < board.GetLength(0); j++)
+                {
+                    if (board[i,j] == 1)
+                    {
+                        coords[0] = i;
+                        coords[1] = j;
+                        return coords;
+                    }
+                }
+            }
+
+            return coords;
         }
 
         static int[,] HitBoard(int[,] shownBoard, int[,] myBoard, int[] playerHit)
@@ -453,8 +511,119 @@
 
         static int[] ChooseSpaceByAdjecent(int[,] board) 
         {
-            int[] coords = [0, 0];
+            int[] coords = [-1, -1];
             
+            for (int i = 0; i < board.GetLength(0); i++)
+            {
+                if (debugText)
+                {
+                    Console.WriteLine($"[DEBUG] LOOPING X+");
+                }
+
+                if (i + firstHit[0] >= board.GetLength(0))
+                {
+                    break;
+                }
+                else if (board[firstHit[0] + i, firstHit[1]] == 3)
+                {
+                    break;
+                }
+                else if (board[firstHit[0] + i, firstHit[1]] == 0)
+                {
+                    coords[0] = firstHit[0] + i;
+                    coords[1] = firstHit[1];
+
+                    lastHit = coords;
+
+                    return coords;
+                }
+            }
+
+            for (int i = 0; i < board.GetLength(0); i++)
+            {
+                if (debugText)
+                {
+                    Console.WriteLine($"[DEBUG] LOOPING X-");
+                }
+
+                if (firstHit[0] - i < 0)
+                {
+                    break;
+                }
+                else if (board[firstHit[0] - i, firstHit[1]] == 3)
+                {
+                    break;
+                }
+                else if (board[firstHit[0] - i, firstHit[1]] == 0)
+                {
+                    coords[0] = firstHit[0] - i;
+                    coords[1] = firstHit[1];
+
+                    lastHit = coords;
+
+                    return coords;
+                }
+            }
+
+            for (int i = 0; i < board.GetLength(1); i++)
+            {
+                if (debugText)
+                {
+                    Console.WriteLine("[DEBUG] LOOPING Y+");
+                }
+
+                if (i + firstHit[1] >= board.GetLength(1))
+                {
+                    break;
+                }
+                else if (board[firstHit[0], firstHit[1] + i] == 3)
+                {
+                    break;
+                }
+                else if (board[firstHit[0], firstHit[1] + i] == 0)
+                {
+                    coords[0] = firstHit[0];
+                    coords[1] = firstHit[1] + i;
+
+                    lastHit = coords;
+
+                    return coords;
+                }
+            }
+
+            for (int i = 0; i < board.GetLength(1); i++)
+            {
+                if (debugText)
+                {
+                    Console.WriteLine("[DEBUG] LOOPING Y-");
+                }
+
+                if (firstHit[1] - i < 0)
+                {
+                    break;
+                }
+                else if (board[firstHit[0] - i, firstHit[1]] == 3)
+                {
+                    break;
+                }
+                else if (board[firstHit[0], firstHit[1] - i] == 0)
+                {
+                    coords[0] = firstHit[0];
+                    coords[1] = firstHit[1] - i;
+                    
+                    lastHit = coords;
+
+                    return coords;
+                }
+            }
+            
+            if (coords[0] == -1)
+            {
+                throw new Exception("Couldn't Find any adjecent unhit spaces; but hit ajdecent was run!");
+            }
+
+            lastHit = coords;
+
             return coords;
         }
     }
