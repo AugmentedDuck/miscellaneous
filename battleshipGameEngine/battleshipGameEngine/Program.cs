@@ -238,7 +238,7 @@
             {
                 for (int j = 0; j < board.GetLength(0); j++)
                 {
-                    if (board[i,j] == 1)
+                    if (board[i,j] == target)
                     {
                         coords[0] = i;
                         coords[1] = j;
@@ -497,14 +497,125 @@
 
         static int[] ChooseSpaceBySpaceScan(int[,] board, int[] ships)
         {
-            int[] coords = [0, 0];
+            int[] coords = [-1, -1];
+            int[,] countBoard = new int[board.GetLength(0),board.GetLength(1)];
+
+
+            foreach (int shipLenght in ships)
+            {
+                for (int i = 0; i < board.GetLength(0); i++)
+                {
+                    for (int j = 0; j < board.GetLength(1); j++)
+                    {
+                        // x-axis positive
+                        bool isClear = true;
+                        for (int k = 0; k < shipLenght; k++)
+                        {
+                            if (i + k >= board.GetLength(0)) { isClear = false; break; }
+                            if (board[i + k, j] != 0) { isClear = false; break; }
+                        }
+
+                        if (isClear)
+                        {
+                            countBoard[i, j] += 1;
+                        }
+
+                        // y-axis positive
+                        isClear = true;
+
+                        for (int k = 0; k < shipLenght; k++)
+                        {
+                            if (j + k >= board.GetLength(1)) { isClear = false; break; }
+                            if (board[i, j + k] != 0) { isClear = false; break; }
+                        }
+
+                        if (isClear)
+                        {
+                            countBoard[i, j] += 1;
+                        }
+
+                        // x-axis negative
+                        isClear = true;
+                        
+                        for (int k = 0; k < shipLenght; k++)
+                        {
+                            if (i - k < 0) { isClear = false; break; }
+                            if (board[i - k, j] != 0) { isClear = false; break; }
+                        }
+
+                        if (isClear)
+                        {
+                            countBoard[i, j] += 1;
+                        }
+
+                        //y-axis negative
+                        isClear = true;
+
+                        for (int k = 0; k < shipLenght; k++)
+                        {
+                            if (j - k < 0) { isClear = false; break; }
+                            if (board[i, j - k] != 0) { isClear = false; break; }
+                        }
+
+                        if (isClear)
+                        {
+                            countBoard[i, j] += 1;
+                        }
+                    }
+                }
+
+            }
+            
+            int maxHitChance = 0;
+
+
+            for (int i = 0; i < countBoard.GetLength(0); i++)
+            {
+                for (int j = 0; j < countBoard.GetLength(1); j++)
+                {
+                    if (countBoard[i,j] > maxHitChance)
+                    {
+                        maxHitChance = countBoard[i,j];
+                        coords = [i, j];
+                    }
+                }
+            }
+
+
+            if (debugText)
+            {
+                Console.WriteLine("| - - - - - - - - - - - D E B U G - - - - - - - - - - - - - - - |");
+                OutputBoard(countBoard);
+                Console.WriteLine("| - - - - - - - - - - - D E B U G - - - - - - - - - - - - - - - |");
+            }
+
+            if (coords[0] == -1)
+            {
+                throw new Exception("Couldn't find any space with a hit chance; but space scan was called");
+            }
 
             return coords;
         }
 
         static int[] ChooseSpaceByPattern(int[,] board, int[] ships)
         {
-            int[] coords = [0, 0];
+            int[] coords = [-1, -1];
+
+            int largestShip = ships.Max();
+
+            for (int i = 0; i < board.GetLength(0); i++)
+            {
+                for (int j = 0; j < board.GetLength(1); j++)
+                {
+                    if ((i + j) % largestShip == 0)
+                    {
+                        if (board[i,j] == 0)
+                        {
+                            coords = [i, j];
+                        }
+                    } 
+                }
+            }
 
             return coords;
         }
