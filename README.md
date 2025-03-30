@@ -15,9 +15,9 @@ This is a collection of random small projects
 * [ ] Hunger Game Simulator (In Progress) (JS)
 * [ ] Memory Game (JS)
 * Number Converters:
-  * [ ] Base(X) to Base(Y) (JS)
+  * [X] Base(X) to Base(Y) (JS)
   * [ ] Decimal to Text (JS)
-  * [ ] Roman to Decimal (JS)
+  * [X] Roman to Decimal (JS)
 * [ ] Pearson Regression (C#)
 * [ ] QR Generators (JS)
 * [ ] Pig Latin (JS)
