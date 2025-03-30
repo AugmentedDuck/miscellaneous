@@ -20,5 +20,5 @@ This is a collection of random small projects
   * [X] Roman to Decimal (JS)
 * [ ] Pearson Regression (C#)
 * [ ] QR Generators (JS)
-* [ ] Pig Latin (JS)
+* [X] Pig Latin (JS)
 * [ ] Sieve of Eratosthenes (C#)
