@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+
+<script type="module" src="./index.js"></script>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>QR Code Generator</h1>
+            <p>Generate a QR code with your contact information</p>
+        </div>
+        <div class="inputForm">
+            <form>
+                <div class="nameContainer">
+                    <p>First Name:</p>
+                    <input type="text" id="firstName" placeholder="e.g. John" required>
+                    <p>Last Name:</p>
+                    <input type="text" id="lastName" placeholder="e.g. Doe" required>
+                </div>
+                <p>e-mail:</p>
+                <input type="email" id="email" placeholder="e.g. john.d@example.com" required>
+                <p>Phone Number:</p>
+                <input type="tel" id="phone" placeholder="e.g. +12 12345678" >
+                <p>X (former Twitter) handle:</p>
+                <input type="text" id="xHandle" placeholder="e.g. @johndoe">
+                <p>GitHub Account:</p>
+                <input type="text" id="github" placeholder="e.g. j0hnD03">
+
+                <div>
+                    <input type="submit" value="Cancel" id="cancelButton">
+                    <input type="submit" value="Generate QR Code" id="generateButton">
+                </div>
+            </form>
+        </div>
+        <div class="qrCodeContainer">
+            <div class="qrCode" id="qrCode">
+
+            </div>
+            <input type="button" value="Download QR Code" id="downloadButton">
+            <input type="button" value="print" id="printButton">
+        </div>
+    </div>
+</body>
+
+</html>

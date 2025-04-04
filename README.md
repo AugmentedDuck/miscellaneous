@@ -19,6 +19,6 @@ This is a collection of random small projects
   * [ ] Decimal to Text (JS)
   * [X] Roman to Decimal (JS)
 * [ ] Pearson Regression (C#)
-* [ ] QR Generators (JS)
+* [ ] QR Generators (In Progress) (JS)
 * [X] Pig Latin (JS)
-* [ ] Sieve of Eratosthenes (C#)
+* [X] Sieve of Eratosthenes (C#)

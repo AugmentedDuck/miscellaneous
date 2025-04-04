@@ -1,0 +1,36 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0;
+
+    background-color: lightblue;
+}
+
+.header {
+    grid-area: 1 / 1 / 2 / 4;
+    padding: 1em;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.inputForm {
+    grid-area: 2 / 1 / 4 / 2;
+    background-color: white;
+    padding: .5em;
+    margin: .5em;
+    border: .1em solid black;
+}
+
+.qrCodeContainer {
+    grid-area: 2 / 2 / 4 / 3;
+    background-color: white;
+    padding: .5em;
+    margin: .5em;
+    border: .1em solid black;
+}
