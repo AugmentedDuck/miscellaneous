@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+
+<body>
+    <div class="content">
+        <div class="inputSection">
+            <p>Text to encrypt/decrypt:</p>
+            <textarea id="inputText" required placeholder="Enter text to encrypt/decrypt"></textarea>
+        </div>
+        <div class="keySection">
+            <h2>KEY</h2>
+            <p>FROM:</p>
+            <input type="text" id="key1" required placeholder="e.g. ABCDEFGHIJKLMNOPQRSTUVWXYZ">
+            
+            <p>TO:</p>
+            <input type="text" id="key2" required placeholder="e.g. ZYXWVUTSRQPONMLKJIHGFEDCBA">
+        </div>
+        
+        <button type="button" id="actionButton">encrypt/decrypt</button>
+        
+        <div class="outputSection">
+            <p>OUTPUT:</p>
+            <textarea id="outputText" readonly></textarea>
+        </div>
+    </div>
+</body>
+<script src="./script.js"></script>
+</html>

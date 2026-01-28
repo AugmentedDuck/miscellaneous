@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="content">
+        <div class="inputSection">
+            <p>Text to decrypt:</p>
+            <textarea id="inputText" required placeholder="Enter text to encrypt/decrypt"></textarea>
+        </div>
+        <div class="hintSection">
+            <p>Known Words (Seperated by ;)</p>
+            <input type="text" id="hint" required placeholder="e.g. hey;hello;world">
+        </div>
+
+        <button type="button" id="actionButton">encrypt/decrypt</button>
+
+        <div class="outputSection">
+            <p>OUTPUT:</p>
+            <textarea id="outputText" readonly></textarea>
+        </div>
+    </div>
+</body>
+<script type="module" src="./script.js"></script>
+</html>
