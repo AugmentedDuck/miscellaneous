@@ -2,46 +2,82 @@
 {
     internal class Program
     {
+        static readonly Random rng = new();
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            Console.WriteLine("Running TurboTorsten Simulation");
 
-            List<int> rounds = new List<int>();
+            const int numberOfSimulations = 1000000;
 
-            for (int i = 0; i < 1000000; i++)
+            long sumRounds = 0;
+            int min = int.MaxValue;
+            int max = int.MinValue;
+            
+            Dictionary<int, int> roundsDistribution = new();
+
+            for (int i = 0; i < numberOfSimulations; i++)
             {
-                rounds.Add(simulateGame());
+                int rounds = simulateGame();
+
+                sumRounds += rounds;
+
+                min = rounds < min ? rounds : min;
+                max = rounds > max ? rounds : max;
+
+                if (roundsDistribution.ContainsKey(rounds))
+                {
+                    roundsDistribution[rounds]++;
+                } 
+                else
+                {
+                    roundsDistribution[rounds] = 1;
+                }
             }
 
-            int averageRound = 0;
-            //int averageDrinks = 0;
+            List<KeyValuePair<int, int>> sortedDistribution = roundsDistribution.OrderBy(kvp => kvp.Key).ToList();
 
-            foreach (int round in rounds)
+            using (StreamWriter writer = new("rounds_distribution.csv"))
             {
-                averageRound += round;
-                //averageDrinks += round[0];
+                writer.WriteLine("Rounds;Count;Probability");
+                foreach (var kvp in sortedDistribution)
+                {
+                    double probability = (double)kvp.Value / numberOfSimulations;
+                    writer.WriteLine($"{kvp.Key};{kvp.Value};{probability}");
+                }
             }
 
-            averageRound /= rounds.Count;
-            //averageDrinks /= rounds.Count;
+            using (StreamWriter writer = new("CDF.csv"))
+            {
+                writer.WriteLine("Rounds;CDF");
 
-            rounds.Sort();
+                double cumulativeProbability = 0.0;
 
-            int roundMean = rounds[rounds.Count / 2];
+                foreach (var kvp in sortedDistribution)
+                {
+                    double probability = (double)kvp.Value / numberOfSimulations;
+                    cumulativeProbability += probability;
 
-            Console.WriteLine(averageRound.ToString() + " rounds\nThe mean number of rounds is: " + roundMean + "\nMin: " + rounds.Min() + "\nMax: " + rounds.Max());
+                    writer.WriteLine($"{kvp.Key};{cumulativeProbability}");
+                }
+            }
+
+            double average = (double)sumRounds / numberOfSimulations;
+
+            Console.WriteLine(
+                $"{average} rounds\n" +
+                $"Min: {min}\n" +
+                $"Max: {max}"
+            );
         }
 
         static int simulateGame()
         {
             int rounds = 0;
             int currentRound = 0;
-            int drinks = 0;
-
 
             bool[] shotGlasses = { false, false, false, false, false, false };
 
-            Random rng = new();
 
             while (currentRound != 6)
             {
@@ -56,11 +92,8 @@
                 {
                     shotGlasses[dice] = false;
                     currentRound++;
-                    drinks++;
                 }
             }
-
-            int[] data = { drinks, rounds };
 
             return rounds;
         }
