@@ -1,0 +1,136 @@
+﻿using System.Diagnostics;
+using System.Diagnostics.Metrics;
+using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
+
+namespace TurboTorsten
+{
+    internal class Program
+    {
+        const int numberOfSimulations = 10_000_000;
+        const int maxExpectedRounds = 100_000;
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine($".NET {Environment.Version} + AVX2 {Avx2.IsSupported} - Simulating {numberOfSimulations} simulations");
+            var sw = Stopwatch.StartNew();
+
+            int processorCount = Environment.ProcessorCount;
+           
+            long[] globalHistogram = new long[maxExpectedRounds];
+
+            int vectorSize = Vector256<int>.Count;
+            int simulationsPerThread = (numberOfSimulations / processorCount) / vectorSize * vectorSize;
+
+            Parallel.For(0, processorCount, workerId =>
+            {
+                long[] localHist = new long[maxExpectedRounds];
+
+                uint seed = (uint)(Guid.NewGuid().GetHashCode());
+                var state = Vector256.Create(seed, seed * 2 + 3, seed * 3 + 5, seed * 5 + 7, seed * 7 + 11, seed * 11 + 13, seed * 13 + 17, seed * 17 + 19);
+
+                for (int i = 0; i < simulationsPerThread / vectorSize; i++)
+                {
+                    Simulate8Games(ref state, localHist);
+                }
+
+                lock (globalHistogram)
+                {
+                    for (int i = 0; i < maxExpectedRounds; i++)
+                    {
+                        globalHistogram[i] += localHist[i];
+                    }
+                }
+            });
+
+            Console.WriteLine($"Simulated {numberOfSimulations:N0} games in {sw.ElapsedMilliseconds}ms.");
+
+            using (var distWriter = new StreamWriter("rounds_distribution.csv"))
+            using (var cdfWriter = new StreamWriter("CDF.csv"))
+            {
+                distWriter.WriteLine("Rounds;Count;Probability");
+                cdfWriter.WriteLine("Rounds;CDF");
+
+                double cumulativeProbability = 0;
+                for (int i = 0; i < globalHistogram.Length; i++)
+                {
+                    if (globalHistogram[i] == 0 && cumulativeProbability >= 0.999999) continue;
+
+                    double prob = (double)globalHistogram[i] / numberOfSimulations;
+                    cumulativeProbability += prob;
+
+                    distWriter.WriteLine($"{i};{globalHistogram[i]};{prob}");
+                    cdfWriter.WriteLine($"{i};{cumulativeProbability}");
+                }
+            }
+
+            Console.WriteLine("Results saved to rounds_distribution.csv and CDF.csv");
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static void Simulate8Games(ref Vector256<uint> rngState, long[] localHist)
+        {
+            var rounds = Vector256<int>.Zero;
+            var consecutiveMisses = Vector256<int>.Zero;
+            var shotMask = Vector256<int>.Zero;
+            var finishedMask = Vector256<int>.Zero;
+
+            while (Vector256.ExtractMostSignificantBits(finishedMask.AsByte()) != 0xFFFFFFFF)
+            {
+                // RNG
+                rngState ^= rngState << 13;
+                rngState ^= rngState >> 17;
+                rngState ^= rngState << 5;
+
+                // Convert RNG to 0-5
+                var rolls = Vector256.ConvertToInt32(
+                    Vector256.ConvertToSingle(rngState >> 8) * Vector256.Create(6.0f / 16777216.0f)
+                );
+
+                var ones = Vector256.Create(1);
+
+                // Split into 128-bit halves
+                var onesLo = ones.GetLower();
+                var onesHi = ones.GetUpper();
+
+                var rollsLo = rolls.GetLower().AsUInt32();
+                var rollsHi = rolls.GetUpper().AsUInt32();
+
+                // Shift per lane
+                var bitsLo = Avx2.ShiftLeftLogicalVariable(onesLo, rollsLo);
+                var bitsHi = Avx2.ShiftLeftLogicalVariable(onesHi, rollsHi);
+
+                // Recombine
+                var bits = Vector256.Create(bitsLo, bitsHi);
+                
+                var activeMask = ~finishedMask;
+                var isHit = Vector256.Equals(shotMask & bits, Vector256<int>.Zero);
+
+                var ifHitMask = shotMask | bits;
+                var ifMissMask = shotMask & ~bits;
+                shotMask = Vector256.ConditionalSelect(isHit, ifHitMask, ifMissMask);
+
+                consecutiveMisses = Vector256.ConditionalSelect(isHit,
+                    Vector256<int>.Zero,
+                    consecutiveMisses + Vector256.Create(1));
+
+                // 7. COUNTER & TERMINATION
+                rounds = Vector256.Subtract(rounds, activeMask); // +1 for active lanes
+
+                var justFinished = Vector256.GreaterThanOrEqual(consecutiveMisses, Vector256.Create(6));
+                finishedMask |= justFinished;
+            }
+
+            // Histogram update
+            for (int i = 0; i < Vector256<int>.Count; i++)
+            {
+                int r = rounds.GetElement(i);
+                if (r >= 0 && r < localHist.Length)
+                {
+                    localHist[r]++;
+                }
+            }
+        }
+    }
+}
