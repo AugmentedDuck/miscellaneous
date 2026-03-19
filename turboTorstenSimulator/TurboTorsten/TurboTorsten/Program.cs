@@ -1,112 +1,104 @@
-﻿namespace TurboTorsten
+using ComputeSharp;
+
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
+using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
+
+namespace TurboTorsten
 {
     internal class Program
     {
-        static ThreadLocal<Random> rng = new(() => new Random(Guid.NewGuid().GetHashCode()));
+        const int numberOfSimulations = 10_000_000;
+        const int maxExpectedRounds = 100_000;
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Running TurboTorsten Simulation");
+            Console.WriteLine($".NET {Environment.Version} + AVX2 {Avx2.IsSupported} - Simulating {numberOfSimulations} simulations");
+            var sw = Stopwatch.StartNew();
 
-            const int numberOfSimulations = 10000000;
-           
-            Dictionary<int, int> globalHistogram = new();
+            int processorCount = Environment.ProcessorCount;
+            long[][] workerHistograms = new long[processorCount][];
+            for (int i = 0; i < processorCount; i++) workerHistograms[i] = new long[maxExpectedRounds];
 
-            object lockObj = new();
+            int simsPerWorker = numberOfSimulations / processorCount;
 
-            Parallel.For(0, numberOfSimulations,
-                () => new Dictionary<int, int>(),
+            Parallel.For(0, processorCount, workerId =>
+            {
+                long[] localHist = workerHistograms[workerId];
 
-                (i, state, localHist) =>
+                for (int i = 0; i < simsPerWorker; i++)
                 {
                     int rounds = simulateGame();
-
-                    if (localHist.ContainsKey(rounds))
+                    if (rounds < maxExpectedRounds)
                     {
                         localHist[rounds]++;
                     }
-                    else
-                    {
-                        localHist[rounds] = 1;
-                    }
-
-                    return localHist;
-                },
-
-                localHist =>
-                {
-                    lock (lockObj)
-                    {
-                        foreach (var kvp in localHist)
-                        {
-                            if (globalHistogram.ContainsKey(kvp.Key))
-                            {
-                                globalHistogram[kvp.Key] += kvp.Value;
-                            }
-                            else
-                            {
-                                globalHistogram[kvp.Key] = kvp.Value;
-                            }
-                        }
-                    }
                 }
-            );
+            });
 
-            var sortedHistogram = globalHistogram.OrderBy(kvp => kvp.Key).ToList();
-
-            using (StreamWriter writer = new("rounds_distribution.csv"))
+            // Merge results at the very end
+            long[] globalHistogram = new long[maxExpectedRounds];
+            for (int i = 0; i < maxExpectedRounds; i++)
             {
-                writer.WriteLine("Rounds;Count;Probability");
-
-                foreach (var kvp in sortedHistogram)
+                for (int w = 0; w < processorCount; w++)
                 {
-                    double probability = (double)kvp.Value / numberOfSimulations;
-                    writer.WriteLine($"{kvp.Key};{kvp.Value};{probability}");
+                    globalHistogram[i] += workerHistograms[w][i];
                 }
             }
 
-            using (StreamWriter writer = new("CDF.csv"))
+            Console.WriteLine($"Simulated {numberOfSimulations:N0} games in {sw.ElapsedMilliseconds}ms.");
+
+            using (var distWriter = new StreamWriter("rounds_distribution.csv"))
+            using (var cdfWriter = new StreamWriter("CDF.csv"))
             {
-                writer.WriteLine("Rounds;CDF");
+                distWriter.WriteLine("Rounds;Count;Probability");
+                cdfWriter.WriteLine("Rounds;CDF");
 
                 double cumulativeProbability = 0;
-
-                foreach (var kvp in sortedHistogram)
+                for (int i = 0; i < globalHistogram.Length; i++)
                 {
-                    double probability = (double)kvp.Value / numberOfSimulations;
-                    cumulativeProbability += probability;
-                    writer.WriteLine($"{kvp.Key};{cumulativeProbability}");
+                    if (globalHistogram[i] == 0 && cumulativeProbability >= 0.999999) continue;
+
+                    double prob = (double)globalHistogram[i] / numberOfSimulations;
+                    cumulativeProbability += prob;
+
+                    distWriter.WriteLine($"{i};{globalHistogram[i]};{prob}");
+                    cdfWriter.WriteLine($"{i};{cumulativeProbability}");
                 }
             }
 
-            Console.WriteLine("Simulation completed. Results saved to rounds_distribution.csv and CDF.csv");
+            Console.WriteLine("Results saved to rounds_distribution.csv and CDF.csv");
         }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static int simulateGame()
         {
             int rounds = 0;
-            int currentRound = 0;
-
+            int consecutiveMisses = 0;
             int shotMask = 0;
 
-
-            while (currentRound != 6)
+            while (consecutiveMisses < 6)
             {
-                int dice = rng.Value.Next(0, 6);
+                int roll = Random.Shared.Next(0, 6);
+                int dice = 1 << roll;
 
-                if ((shotMask & (1 << dice)) == 0)
+                if ((shotMask & dice) == 0)
                 {
-                    shotMask |= (1 << dice);
+                    shotMask |= dice;
                     rounds++;
-                    currentRound = 0;
-                } else
+                    consecutiveMisses = 0;
+                }
+                else
                 {
-                    shotMask &= ~(1 << dice);
-                    currentRound++;
+                    shotMask &= ~dice;
+                    consecutiveMisses++;
                 }
             }
 
             return rounds;
         }
+        
     }
 }
