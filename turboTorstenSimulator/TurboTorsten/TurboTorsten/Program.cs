@@ -98,6 +98,7 @@ namespace TurboTorsten
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static uint Xorshift32(ref uint state)
         {
             uint x = state;
             x ^= x << 13;
