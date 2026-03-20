@@ -1,5 +1,3 @@
-using ComputeSharp;
-
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Runtime.CompilerServices;
@@ -10,8 +8,8 @@ namespace TurboTorsten
 {
     internal class Program
     {
-        const int numberOfSimulations = 10_000_000;
-        const int maxExpectedRounds = 100_000;
+        const int numberOfSimulations = 1_000_000;
+        const int maxExpectedRounds = 50_000;
 
         static void Main(string[] args)
         {
@@ -28,9 +26,11 @@ namespace TurboTorsten
             {
                 long[] localHist = workerHistograms[workerId];
 
+                uint rngState = (uint)(workerId + 1) * 123456789u;
+
                 for (int i = 0; i < simsPerWorker; i++)
                 {
-                    int rounds = simulateGame();
+                    int rounds = simulateGame(ref rngState);
                     if (rounds < maxExpectedRounds)
                     {
                         localHist[rounds]++;
@@ -70,10 +70,11 @@ namespace TurboTorsten
             }
 
             Console.WriteLine("Results saved to rounds_distribution.csv and CDF.csv");
+            Console.ReadLine();
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static int simulateGame()
+        static int simulateGame(ref uint rngState)
         {
             int rounds = 0;
             int consecutiveMisses = 0;
@@ -81,24 +82,30 @@ namespace TurboTorsten
 
             while (consecutiveMisses < 6)
             {
-                int roll = Random.Shared.Next(0, 6);
+                int roll = (int)((xorshift32(ref rngState) * 6UL) >> 32);
                 int dice = 1 << roll;
 
-                if ((shotMask & dice) == 0)
-                {
-                    shotMask |= dice;
-                    rounds++;
-                    consecutiveMisses = 0;
-                }
-                else
-                {
-                    shotMask &= ~dice;
-                    consecutiveMisses++;
-                }
+                int hit = ((shotMask & dice) == 0) ? 1 : 0;
+
+                shotMask ^= dice;
+
+                rounds += hit;
+
+                consecutiveMisses = (consecutiveMisses + 1) * (1 - hit);
             }
 
             return rounds;
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static uint xorshift32(ref uint state)
+        {
+            uint x = state;
+            x ^= x << 13;
+            x ^= x >> 17;
+            x ^= x << 5;
+            state = x;
+            return x;
+        }
     }
 }
