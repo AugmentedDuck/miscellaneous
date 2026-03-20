@@ -30,7 +30,7 @@ namespace TurboTorsten
 
                 for (int i = 0; i < simsPerWorker; i++)
                 {
-                    int rounds = simulateGame(ref rngState);
+                    int rounds = SimulateGame(ref rngState);
                     if (rounds < maxExpectedRounds)
                     {
                         localHist[rounds]++;
@@ -74,7 +74,7 @@ namespace TurboTorsten
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static int simulateGame(ref uint rngState)
+        static int SimulateGame(ref uint rngState)
         {
             int rounds = 0;
             int consecutiveMisses = 0;
@@ -82,7 +82,7 @@ namespace TurboTorsten
 
             while (consecutiveMisses < 6)
             {
-                int roll = (int)((xorshift32(ref rngState) * 6UL) >> 32);
+                int roll = (int)((Xorshift32(ref rngState) * 6UL) >> 32);
                 int dice = 1 << roll;
 
                 int hit = ((shotMask & dice) == 0) ? 1 : 0;
@@ -98,7 +98,6 @@ namespace TurboTorsten
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static uint xorshift32(ref uint state)
         {
             uint x = state;
             x ^= x << 13;
