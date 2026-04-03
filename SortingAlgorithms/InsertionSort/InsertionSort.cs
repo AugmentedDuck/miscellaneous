@@ -11,7 +11,7 @@ namespace SortingAlgorithms
             return "Insertion Sort";
         }
 
-        public int[] Sort(int[] array)
+        public void Sort(int[] array)
         {
             for (int i = 1; i < array.Length; i++)
             {
@@ -26,9 +26,6 @@ namespace SortingAlgorithms
 
                 array[j + 1] = key;
             }
-
-
-            return array;
         }
     }
 }

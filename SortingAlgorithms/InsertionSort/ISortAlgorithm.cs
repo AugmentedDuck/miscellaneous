@@ -6,7 +6,7 @@ namespace SortingAlgorithms
 {
     internal interface ISortAlgorithm
     {
-        public int[] Sort(int[] array);
+        public void Sort(int[] array);
 
         public string Name();
     }

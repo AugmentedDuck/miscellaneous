@@ -11,11 +11,9 @@ namespace SortingAlgorithms
             return "Miracle Sort";
         }
 
-        public int[] Sort(int[] array)
+        public void Sort(int[] array)
         {
             while (!IsSorted(array)) { Thread.Sleep(1000); }
-
-            return array;
         }
 
         private static bool IsSorted(int[] array)

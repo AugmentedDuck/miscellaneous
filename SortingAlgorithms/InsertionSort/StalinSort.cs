@@ -11,18 +11,33 @@ namespace SortingAlgorithms
             return "Stalin Sort";
         }
 
-        public int[] Sort(int[] array)
+        public void Sort(int[] array)
         {
             List<int> list = [];
+            list.Add(array[0]);
+
             for (int i = 0; i < array.Length; i++)
             {
                 if (i + 1 < array.Length && array[i] < array[i + 1])
                 {
-                    list.Add(array[i]);
+                    list.Add(array[i + 1]);
                 }
             }
 
-            return [.. list];
+            int idx = 0;
+
+            while (idx < array.Length)
+            {
+                if (list.Count > idx)
+                {
+                    array[idx] = list[idx];
+                }
+                else
+                {
+                    array[idx] = 0;
+                }
+                idx++;
+            } 
         }
     }
 }

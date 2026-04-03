@@ -11,10 +11,10 @@ namespace SortingAlgorithms
             return "Bubble Sort";
         }
 
-        public int[] Sort(int[] array)
+        public void Sort(int[] array)
         {
             int length = array.Length;
-            while (length <= 1)
+            while (length >= 1)
             {
                 int newLength = 0;
                 for (int i = 1; i < length; i++)
@@ -28,8 +28,6 @@ namespace SortingAlgorithms
 
                 length = newLength;
             }
-
-            return array;
         }
     }
 }

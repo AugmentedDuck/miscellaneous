@@ -11,9 +11,9 @@ namespace SortingAlgorithms
             return "Dictator Sort";
         }
 
-        public int[] Sort(int[] array)
+        public void Sort(int[] array)
         {
-            return array;
+
         }
     }
 }

@@ -14,14 +14,12 @@ namespace SortingAlgorithms
             return "Bozosort";
         }
 
-        public int[] Sort(int[] array)
+        public void Sort(int[] array)
         {
             while (!IsSorted(array))
             {
                 ShuffleTwo(array);
             }
-
-            return array;
         }
 
         private void ShuffleTwo(int[] array)

@@ -14,14 +14,12 @@ namespace SortingAlgorithms
             return "Bogosort";
         }
 
-        public int[] Sort(int[] array)
+        public void Sort(int[] array)
         {
             while (!IsSorted(array))
             {
                 Shuffle(array);
             }
-
-            return array;
         }
 
         private void Shuffle(int[] array)

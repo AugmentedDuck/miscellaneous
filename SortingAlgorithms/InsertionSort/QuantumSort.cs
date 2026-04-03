@@ -13,7 +13,7 @@ namespace SortingAlgorithms
             return "Quantum Sort";
         }
 
-        public int[] Sort(int[] array)
+        public void Sort(int[] array)
         {
             for (int i = 0; i < array.Length; i++)
             {
@@ -21,8 +21,6 @@ namespace SortingAlgorithms
 
                 (array[idx2], array[i]) = (array[i], array[idx2]);
             }
-
-            return array;
         }
     }
 }
