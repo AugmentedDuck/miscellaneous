@@ -41,14 +41,14 @@ namespace SortingAlgorithms
             //Console.WriteLine("(30) Spreadsort");
             //Console.WriteLine("(31) Burstsort");
             //Console.WriteLine("(32) Flashsort");
-            Console.WriteLine("(33) Bogosort");
-            //Console.WriteLine("(34) Bogo-Bogosort");
+            Console.WriteLine("! (33) Bogosort !");
+            //Console.WriteLine("! (34) Bogo-Bogosort !");
             //Console.WriteLine("(35) Stooge sort");
             //Console.WriteLine("(36) Slowsort");
             //Console.WriteLine("(37) Thanos sort - Removes Data");
             //Console.WriteLine("(38) Stalin sort - Removes Data");
-            Console.WriteLine("(39) Miracle sort - Will probably not finish");
-            Console.WriteLine("(40) Bozosort");
+            Console.WriteLine("! (39) Miracle sort - Will probably not finish !");
+            Console.WriteLine("! (40) Bozosort !");
             Console.WriteLine("(41) Quantum sort - Requires the correct universe");
             Console.WriteLine("(42) Dictator sort - Will not always result in correct sorted arrays");
             //Console.WriteLine("(43) Pancake sort");
@@ -97,6 +97,11 @@ namespace SortingAlgorithms
                 Console.WriteLine("");
 
                 result += $"{size};{stopwatch.ElapsedMilliseconds};True\n";
+
+                if (stopwatch.ElapsedMilliseconds > 10000)
+                {
+                    break;
+                }
             }
 
             for (int k = 0; k < rounds / 2; k++)
@@ -111,6 +116,11 @@ namespace SortingAlgorithms
                 algorithm.Sort(array);
 
                 result += $"{size};{stopwatch.ElapsedMilliseconds};False\n";
+
+                if (stopwatch.ElapsedMilliseconds > 10000)
+                {
+                    break;
+                }
             }
 
             return result;
