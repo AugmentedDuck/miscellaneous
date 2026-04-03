@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SortingAlgorithms
+{
+    internal class Bogosort : ISortAlgorithm
+    {
+        readonly Random rng = new();
+
+
+        public string Name()
+        {
+            return "Bogosort";
+        }
+
+        public int[] Sort(int[] array)
+        {
+            while (!IsSorted(array))
+            {
+                Shuffle(array);
+            }
+
+            return array;
+        }
+
+        private void Shuffle(int[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                int idx2 = rng.Next(i, array.Length);
+
+                int temp = array[i];
+                array[i] = array[idx2];
+                array[idx2] = temp;
+            }
+        }
+
+        private bool IsSorted(int[] array)
+        {
+            int idx = 0;
+
+            while (idx < array.Length)
+            {
+                if (idx + 1 < array.Length && array[idx] > array[idx + 1])
+                {
+                    return false;
+                }
+                idx++;
+            }
+
+            return true;
+        }
+    }
+}
