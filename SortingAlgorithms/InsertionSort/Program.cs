@@ -46,11 +46,11 @@ namespace SortingAlgorithms
             //Console.WriteLine("(35) Stooge sort");
             //Console.WriteLine("(36) Slowsort");
             //Console.WriteLine("(37) Thanos sort - Removes Data");
-            //Console.WriteLine("(38) Stalin sort - Removes Data");
-            Console.WriteLine("! (39) Miracle sort - Will probably not finish !");
+            Console.WriteLine("(38) Stalin sort - Removes Data");
+            Console.WriteLine("! (39) Miracle sort !");
             Console.WriteLine("! (40) Bozosort !");
             Console.WriteLine("(41) Quantum sort - Requires the correct universe");
-            Console.WriteLine("(42) Dictator sort - Will not always result in correct sorted arrays");
+            Console.WriteLine("(42) Dictator sort");
             //Console.WriteLine("(43) Pancake sort");
             //Console.WriteLine("(44) Bitonic sort");
 
@@ -133,6 +133,7 @@ namespace SortingAlgorithms
             algorithms[18 - 1] = new InsertionSort();
             algorithms[19 - 1] = new BubbleSort();
             algorithms[33 - 1] = new Bogosort();
+            algorithms[38 - 1] = new StalinSort();
             algorithms[39 - 1] = new MiracleSort();
             algorithms[40 - 1] = new Bozosort();
             algorithms[41 - 1] = new QuantumSort();
