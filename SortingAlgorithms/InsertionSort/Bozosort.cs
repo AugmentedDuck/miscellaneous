@@ -34,12 +34,10 @@ namespace SortingAlgorithms
                idx2 = rng.Next(0, array.Length);
             } while (idx1 == idx2);
 
-            int temp = array[idx2];
-            array[idx2] = array[idx1];
-            array[idx1] = temp;
+            (array[idx1], array[idx2]) = (array[idx2], array[idx1]);
         }
 
-        private bool IsSorted(int[] array)
+        private static bool IsSorted(int[] array)
         {
             int idx = 0;
 

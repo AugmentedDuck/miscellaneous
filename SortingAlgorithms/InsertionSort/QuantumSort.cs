@@ -19,9 +19,7 @@ namespace SortingAlgorithms
             {
                 int idx2 = rng.Next(i, array.Length);
 
-                int temp = array[i];
-                array[i] = array[idx2];
-                array[idx2] = temp;
+                (array[idx2], array[i]) = (array[i], array[idx2]);
             }
 
             return array;
