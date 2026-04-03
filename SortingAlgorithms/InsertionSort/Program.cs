@@ -27,7 +27,7 @@ namespace SortingAlgorithms
             //Console.WriteLine("(16) Shellsort");
             //Console.WriteLine("(17) Comb sort");
             Console.WriteLine("(18) Insertion sort");
-            //Console.WriteLine("(19) Bubble sort");
+            Console.WriteLine("(19) Bubble sort");
             //Console.WriteLine("(20) Cocktail Shaker sort");
             //Console.WriteLine("(21) Gnome sort");
             //Console.WriteLine("(22) Odd-even sort");
@@ -131,6 +131,7 @@ namespace SortingAlgorithms
             ISortAlgorithm[] algorithms = new ISortAlgorithm[44];
 
             algorithms[18 - 1] = new InsertionSort();
+            algorithms[19 - 1] = new BubbleSort();
             algorithms[33 - 1] = new Bogosort();
             algorithms[39 - 1] = new MiracleSort();
             algorithms[40 - 1] = new Bozosort();
