@@ -16,7 +16,7 @@ namespace SortingAlgorithms
 
         public void Sort(int[] array)
         {
-            while (!IsSorted(array))
+            while (!Util.IsSorted(array))
             {
                 Shuffle(array);
             }
@@ -30,22 +30,6 @@ namespace SortingAlgorithms
 
                 (array[idx2], array[i]) = (array[i], array[idx2]);
             }
-        }
-
-        private static bool IsSorted(int[] array)
-        {
-            int idx = 0;
-
-            while (idx < array.Length)
-            {
-                if (idx + 1 < array.Length && array[idx] > array[idx + 1])
-                {
-                    return false;
-                }
-                idx++;
-            }
-
-            return true;
         }
     }
 }
