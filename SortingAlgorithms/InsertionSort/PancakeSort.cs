@@ -32,7 +32,7 @@ namespace SortingAlgorithms
             }
         }
 
-        private void ReverseArray(int[] array, int right)
+        private static void ReverseArray(int[] array, int right)
         {
             int left = 0;
 
@@ -44,7 +44,7 @@ namespace SortingAlgorithms
             }
         }
 
-        private int MaxIndex(int[] array, int n)
+        private static int MaxIndex(int[] array, int n)
         {
             int idx = 0;
 
