@@ -46,7 +46,7 @@ namespace SortingAlgorithms
             //Console.WriteLine("! (34) Bogo-Bogosort !");
             //Console.WriteLine("(35) Stooge sort");
             //Console.WriteLine("(36) Slowsort");
-            Console.WriteLine("(37) Thanos sort - Removes Data");
+            Console.WriteLine("(37) Thanos sort - Removes Data [V]");
             Console.WriteLine("(38) Stalin sort - Removes Data [V]");
             Console.WriteLine("! (39) Miracle sort ! [N/A]");
             Console.WriteLine("! (40) Bozosort ! [V]");

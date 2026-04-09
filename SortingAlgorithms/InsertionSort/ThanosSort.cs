@@ -11,7 +11,7 @@ namespace SortingAlgorithms
             return "Thanos Sort";
         }
 
-        public int[] Sort(int[] array)
+        public void Sort(int[] array)
         {
             List<int> list = [.. array];
 
@@ -41,7 +41,20 @@ namespace SortingAlgorithms
                 idx++;
             }
 
-            return [.. list];
+            idx = 0;
+
+            while (idx < array.Length)
+            {
+                if (list.Count > idx)
+                {
+                    array[idx] = list[idx];
+                }
+                else
+                {
+                    array[idx] = 0;
+                }
+                idx++;
+            }
         }
     }
 }
