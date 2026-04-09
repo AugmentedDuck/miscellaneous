@@ -8,7 +8,7 @@ namespace SortingAlgorithms
     {
         public string Name()
         {
-            return "Dictator Sort";
+            return "Dictator Sort/Intelligent Design Sort";
         }
 
         public void Sort(int[] array)
