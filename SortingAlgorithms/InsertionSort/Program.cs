@@ -168,7 +168,7 @@ namespace SortingAlgorithms
              * [V] Bogosort ! VERY SLOW
              * [V] Bogobogosort ! EXTREMELY SLOW
              * [V] Stooge sort
-             * [ ] Slowsort
+             * [V] Slowsort
              * [V] Thanos sort ! Removes Data
              * [V] Stalin sort ! Removes Data
              * [I] Miracle sort ! DONT TEST
@@ -186,10 +186,11 @@ namespace SortingAlgorithms
 
 
             // OTHER
+            algorithms.Add(new StoogeSort());
+            algorithms.Add(new Slowsort());
             algorithms.Add(new Bogosort());
             algorithms.Add(new Bozosort());
             algorithms.Add(new Bogobogosort());
-            algorithms.Add(new StoogeSort());
             algorithms.Add(new ThanosSort());
             algorithms.Add(new StalinSort());
             algorithms.Add(new DictatorSort());
