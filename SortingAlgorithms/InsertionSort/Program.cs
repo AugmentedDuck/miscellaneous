@@ -182,6 +182,10 @@ namespace SortingAlgorithms
             algorithms.Add(new PatienceSort());
             algorithms.Add(new InsertionSort());
             algorithms.Add(new BubbleSort());
+            // NC
+
+
+            // OTHER
             algorithms.Add(new Bogosort());
             algorithms.Add(new Bozosort());
             algorithms.Add(new Bogobogosort());
