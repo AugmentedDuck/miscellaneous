@@ -6,7 +6,7 @@ namespace SortingAlgorithms
 {
     internal class Bogobogosort : ISortAlgorithm
     {
-        Random rng = new();
+        readonly Random rng = new();
 
         public string Name()
         {

@@ -40,7 +40,7 @@ namespace SortingAlgorithms
             }
         }
 
-        private List<List<int>> GeneratePiles(int[] array)
+        static private List<List<int>> GeneratePiles(int[] array)
         {
             List<List<int>> piles = [];
 
