@@ -19,7 +19,7 @@ namespace SortingAlgorithms
             //Console.WriteLine("(7) Block sort");
             //Console.WriteLine("(8) Smoothsort");
             //Console.WriteLine("(9) Timsort");
-            //Console.WriteLine("(10) Patience sort");
+            Console.WriteLine("(10) Patience sort [V]");
             //Console.WriteLine("(11) Cubesort");
             //Console.WriteLine("(12) Quicksort");
             //Console.WriteLine("(13) Fluxsort");
@@ -178,6 +178,7 @@ namespace SortingAlgorithms
         {
             ISortAlgorithm[] algorithms = new ISortAlgorithm[44];
 
+            algorithms[10 - 1] = new PatienceSort();
             algorithms[18 - 1] = new InsertionSort();
             algorithms[19 - 1] = new BubbleSort();
             algorithms[33 - 1] = new Bogosort();
