@@ -135,8 +135,8 @@ namespace SortingAlgorithms
              * [ ] Timsort
              * [V] Patience sort
              * [ ] Cubesort
-             * [ ] Quicksort - Random
-             * [ ] Quicksort - Median of Medians
+             * [V] Quicksort - Random
+             * [V] Quicksort - Median of 3
              * [ ] Fluxsort
              * [ ] Crumsort
              * [ ] Library sort
@@ -180,6 +180,10 @@ namespace SortingAlgorithms
 
             algorithms.Add(new Heapsort());
             algorithms.Add(new PatienceSort());
+            algorithms.Add(new Quicksort(0));
+            algorithms.Add(new Quicksort(1));
+            algorithms.Add(new Quicksort(2));
+            algorithms.Add(new Quicksort(3));
             algorithms.Add(new InsertionSort());
             algorithms.Add(new BubbleSort());
             // NC
