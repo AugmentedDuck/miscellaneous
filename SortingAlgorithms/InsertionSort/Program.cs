@@ -175,8 +175,7 @@ namespace SortingAlgorithms
              * [V] Bozosort ! VERY SLOW
              * [I] Quantum sort ! Requires the correct universe
              * [I] Dictator sort
-             * [ ] Pancake sort
-             * [ ] Bitonic sort
+             * [V] Pancake sort
              */
 
             algorithms.Add(new PatienceSort());
@@ -186,6 +185,7 @@ namespace SortingAlgorithms
 
 
             // OTHER
+            algorithms.Add(new PancakeSort());
             algorithms.Add(new StoogeSort());
             algorithms.Add(new Slowsort());
             algorithms.Add(new Bogosort());
