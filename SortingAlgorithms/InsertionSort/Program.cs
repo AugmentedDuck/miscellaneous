@@ -124,7 +124,7 @@ namespace SortingAlgorithms
 
             /*
              * ALGORITHMS TO IMPLEMENT (V.erified, I.mplemented):
-             * [ ] Heapsort
+             * [V] Heapsort
              * [ ] Introsort
              * [ ] Merge sort
              * [ ] In-Place Merge sort
@@ -178,6 +178,7 @@ namespace SortingAlgorithms
              * [V] Pancake sort
              */
 
+            algorithms.Add(new Heapsort());
             algorithms.Add(new PatienceSort());
             algorithms.Add(new InsertionSort());
             algorithms.Add(new BubbleSort());
