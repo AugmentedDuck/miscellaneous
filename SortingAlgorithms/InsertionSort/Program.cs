@@ -9,65 +9,9 @@ namespace SortingAlgorithms
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Please Select Algorithm to Test:");
-            //Console.WriteLine("(1) Heapsort");
-            //Console.WriteLine("(2) Introsort");
-            //Console.WriteLine("(3) Merge sort");
-            //Console.WriteLine("(4) In-Place Merge sort");
-            //Console.WriteLine("(5) Tournament sort");
-            //Console.WriteLine("(6) Tree sort");
-            //Console.WriteLine("(7) Block sort");
-            //Console.WriteLine("(8) Smoothsort");
-            //Console.WriteLine("(9) Timsort");
-            Console.WriteLine("(10) Patience sort [V]");
-            //Console.WriteLine("(11) Cubesort");
-            //Console.WriteLine("(12) Quicksort");
-            //Console.WriteLine("(13) Fluxsort");
-            //Console.WriteLine("(14) Crumsort");
-            //Console.WriteLine("(15) Library sort");
-            //Console.WriteLine("(16) Shellsort");
-            //Console.WriteLine("(17) Comb sort");
-            Console.WriteLine("(18) Insertion sort [V]");
-            Console.WriteLine("(19) Bubble sort [V]");
-            //Console.WriteLine("(20) Cocktail Shaker sort");
-            //Console.WriteLine("(21) Gnome sort");
-            //Console.WriteLine("(22) Odd-even sort");
-            //Console.WriteLine("(23) Strand sort");
-            //Console.WriteLine("(24) Selection sort");
-            //Console.WriteLine("(25) Cycle sort");
-            //Console.WriteLine("(26) Pigeonhole sort");
-            //Console.WriteLine("(27) Bucket sort");
-            //Console.WriteLine("(28) Counting sort");
-            //Console.WriteLine("(29) Radix sort");
-            //Console.WriteLine("(30) Spreadsort");
-            //Console.WriteLine("(31) Burstsort");
-            //Console.WriteLine("(32) Flashsort");
-            Console.WriteLine("! (33) Bogosort ! [V]");
-            //Console.WriteLine("! (34) Bogo-Bogosort !");
-            //Console.WriteLine("(35) Stooge sort");
-            //Console.WriteLine("(36) Slowsort");
-            Console.WriteLine("(37) Thanos sort - Removes Data [V]");
-            Console.WriteLine("(38) Stalin sort - Removes Data [V]");
-            Console.WriteLine("! (39) Miracle sort ! [N/A]");
-            Console.WriteLine("! (40) Bozosort ! [V]");
-            Console.WriteLine("(41) Quantum sort - Requires the correct universe [N/A]");
-            Console.WriteLine("(42) Dictator sort [N/A]");
-            //Console.WriteLine("(43) Pancake sort");
-            //Console.WriteLine("(44) Bitonic sort");
-
-            string input = Console.ReadLine()!;
-
-            while (int.Parse(input) < 1 || int.Parse(input) > 44)
-            {
-                Console.WriteLine("Invalid input. Please select a number between 1 and 44.");
-                input = Console.ReadLine()!;
-            }
-
-            ISortAlgorithm algorithm = ChooseAlgorithm(input);
+            ISortAlgorithm algorithm = ChooseAlgorithm();
 
             Console.WriteLine(TestCorrectness(algorithm));
-
-
 
             /* Disabled for testing correctness of algorithms
             Console.WriteLine($"{algorithm.Name()}\nSize of Array;Time (ms);Large Span numbers\n");
@@ -174,22 +118,94 @@ namespace SortingAlgorithms
             return result;
         }
 
-        private static ISortAlgorithm ChooseAlgorithm(string choice)
+        private static ISortAlgorithm ChooseAlgorithm()
         {
-            ISortAlgorithm[] algorithms = new ISortAlgorithm[44];
+            List<ISortAlgorithm> algorithms = [];
 
-            algorithms[10 - 1] = new PatienceSort();
-            algorithms[18 - 1] = new InsertionSort();
-            algorithms[19 - 1] = new BubbleSort();
-            algorithms[33 - 1] = new Bogosort();
-            algorithms[37 - 1] = new ThanosSort();
-            algorithms[38 - 1] = new StalinSort();
-            algorithms[39 - 1] = new MiracleSort();
-            algorithms[40 - 1] = new Bozosort();
-            algorithms[41 - 1] = new QuantumSort();
-            algorithms[42 - 1] = new DictatorSort();
+            /*
+             * ALGORITHMS TO IMPLEMENT (V.erified, I.mplemented):
+             * [ ] Heapsort
+             * [ ] Introsort
+             * [ ] Merge sort
+             * [ ] In-Place Merge sort
+             * [ ] Tournament sort
+             * [ ] Tree sort
+             * [ ] Block sort
+             * [ ] Smoothsort
+             * [ ] Timsort
+             * [V] Patience sort
+             * [ ] Cubesort
+             * [ ] Quicksort - Random
+             * [ ] Quicksort - Median of Medians
+             * [ ] Fluxsort
+             * [ ] Crumsort
+             * [ ] Library sort
+             * [ ] Shellsort - Geometric
+             * [ ] Shellsort - Pratt
+             * [ ] Shellsort
+             * [ ] Comb sort
+             * [V] Insertion sort
+             * [V] Bubble sort
+             * [ ] Cocktail Shaker sort
+             * [ ] Gnome sort
+             * [ ] Odd-even sort
+             * [ ] Strand sort
+             * [ ] Selection sort
+             * [ ] Cycle sort
+             * 
+             * N-C Sorts
+             * [ ] Pigeonhole sort
+             * [ ] Bucket sort
+             * [ ] Counting sort
+             * [ ] Radix sort - LSD
+             * [ ] Radix sort - MSD
+             * [ ] Radix sort - MSD - In-Place
+             * [ ] Spreadsort
+             * [ ] Burstsort
+             * [ ] Flashsort
+             * 
+             * OTHER ALGORITHMS
+             * [V] Bogosort ! VERY SLOW
+             * [ ] Bogobogosort ! EXTREMELY SLOW
+             * [ ] Stooge sort
+             * [ ] Slowsort
+             * [V] Thanos sort ! Removes Data
+             * [V] Stalin sort ! Removes Data
+             * [I] Miracle sort ! DONT TEST
+             * [V] Bozosort ! VERY SLOW
+             * [I] Quantum sort ! Requires the correct universe
+             * [I] Dictator sort
+             * [ ] Pancake sort
+             * [ ] Bitonic sort
+             */
 
-            return algorithms[int.Parse(choice) - 1];
+            algorithms.Add(new PatienceSort());
+            algorithms.Add(new InsertionSort());
+            algorithms.Add(new BubbleSort());
+            algorithms.Add(new Bogosort());
+            algorithms.Add(new ThanosSort());
+            algorithms.Add(new StalinSort());
+            algorithms.Add(new MiracleSort());
+            algorithms.Add(new Bozosort());
+            algorithms.Add(new QuantumSort());
+            algorithms.Add(new DictatorSort());
+
+            Console.WriteLine("Please Select Algorithm to Test:");
+            
+            foreach (ISortAlgorithm algorithm in algorithms)
+            {
+                Console.WriteLine($"({algorithms.IndexOf(algorithm)}) {algorithm.Name()}");
+            }
+
+            string input = Console.ReadLine()!;
+
+            while (int.Parse(input) < 0 || int.Parse(input) > algorithms.Count)
+            {
+                Console.WriteLine($"Invalid input. Please select a number between 0 and {algorithms.Count}");
+                input = Console.ReadLine()!;
+            }
+
+            return algorithms[int.Parse(input)];
         }
     }
 }
